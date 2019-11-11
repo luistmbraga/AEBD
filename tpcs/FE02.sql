@@ -1,0 +1,207 @@
+
+
+/*1*/
+SELECT JOB_TITLE, MIN_SALARY
+FROM HR.JOBS
+WHERE MIN_SALARY > 10000;
+
+/*2*/
+Select concat(concat(FIRST_NAME ,' '), LAST_NAME) as Nome 
+From EMPLOYEES 
+Where Extract(Year From HIRE_DATE)<=2000 and Extract(Year From HIRE_DATE)>=1998
+Order By HIRE_DATE; 
+
+/*3*/
+SELECT concat(concat(FIRST_NAME ,' '), LAST_NAME) as Nome, e.HIRE_DATE, j.JOB_TITLE
+FROM HR.EMPLOYEES e, HR.JOBS j
+WHERE e.JOB_ID = j.JOB_ID AND
+      (j.JOB_TITLE = 'Programmer' OR j.JOB_TITLE = 'Sales Representative');
+      
+/*4*/
+SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME
+FROM HR.EMPLOYEES
+WHERE HIRE_DATE > '1-JAN-1998';
+
+/*5*/
+SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME
+FROM HR.EMPLOYEES
+WHERE EMPLOYEE_ID BETWEEN 140 AND 170;
+
+/*6*/
+SELECT LAST_NAME, COMMISSION_PCT, HIRE_DATE
+FROM HR.EMPLOYEES
+WHERE SALARY < 12000;
+
+/*7*/
+SELECT JOB_TITLE, MAX_SALARY - MIN_SALARY
+FROM HR.JOBS
+WHERE MAX_SALARY BETWEEN 10000 AND 20000;
+
+/*8*/
+SELECT FIRST_NAME, SALARY, ROUND(SALARY, -3)
+FROM HR.EMPLOYEES;
+
+/*9*/
+SELECT *
+FROM HR.JOBS
+ORDER BY JOB_TITLE DESC;
+
+/*10*/
+SELECT EMPLOYEE_ID
+FROM HR.EMPLOYEES
+WHERE FIRST_NAME LIKE '%d' AND LAST_NAME LIKE 'G%';
+
+/*11*/
+Select * 
+From EMPLOYEES 
+Where Extract(Month From HIRE_DATE) = 6;
+
+/*12*/
+SELECT *
+FROM HR.EMPLOYEES
+WHERE COMMISSION_PCT IS null AND 
+      (SALARY BETWEEN 2000 AND 5000) AND
+      DEPARTMENT_ID = 30;
+      
+/*13*/
+Select concat(concat(FIRST_NAME ,' '), LAST_NAME) as Nome 
+From EMPLOYEES Where Extract(Year From HIRE_DATE) = 1998;
+
+
+/*14*/
+SELECT JOB_ID, NVL(SUBSTR(JOB_TITLE ,1 , INSTR(JOB_TITLE, ' ',1 ) ), JOB_TITLE)
+FROM HR.JOBS;
+
+/*15*/
+SELECT FIRST_NAME, LAST_NAME
+FROM HR.EMPLOYEES
+WHERE SUBSTR(LAST_NAME, 4, LENGTH(LAST_NAME)-3) LIKE '%b%';
+
+/*16*/
+SELECT * 
+FROM HR.EMPLOYEES
+WHERE EXTRACT(YEAR FROM HIRE_DATE) = EXTRACT(YEAR FROM sysdate);
+
+/*17*/
+SELECT abs(sysdate - TO_DATE('2011-01-01', 'yyyy-mm-dd')) FROM DUAL;
+
+/*18*/
+ Select Extract(Month From e.HIRE_DATE) as Mes, count(*) as Funcionarios 
+        From HR.EMPLOYEES e
+        Where Extract(Year From e.HIRE_DATE) = 1998
+        Group by Extract(Month From e.HIRE_DATE)
+        ORDER BY Extract(Month From e.HIRE_DATE);
+
+/*19*/
+SELECT c.COUNTRY_NAME , COUNT( DISTINCT l.CITY)
+FROM HR.COUNTRIES c, HR.LOCATIONS l
+WHERE l.COUNTRY_ID = c.COUNTRY_ID
+GROUP BY c.COUNTRY_NAME;
+
+/*20*/
+SELECT AVG(SALARY)
+FROM EMPLOYEES
+WHERE COMMISSION_PCT IS NOT null
+GROUP BY DEPARTMENT_ID;
+
+/*21*/
+INSERT INTO EMPLOYEES( LAST_NAME, EMAIL, HIRE_DATE, JOB_ID)
+VALUES ('Machado', 'manuel@gmail.com', '18-OCT-19' ,'MK_MAN');
+
+/*22*/
+UPDATE EMPLOYEES 
+SET SALARY = 8000
+WHERE EMPLOYEE_ID = 115 AND SALARY < 6000;
+
+/*23*/
+SELECT d.DEPARTMENT_NAME, COUNT(e.EMPLOYEE_ID)
+FROM DEPARTMENTS d, EMPLOYEES e
+WHERE d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY d.DEPARTMENT_NAME;
+
+/*24*/
+select j.job_title, e.employee_id, abs(jh.end_date-jh.start_date) 
+    from jobs j, employees e, job_history jh, departments d
+        where d.department_id = 20 and
+            d.department_id = jh.department_id and
+            jh.employee_id = e.employee_id and
+            jh.job_id = j.job_id;
+    select * from job_history where department_id = 20;
+
+/*25*/
+SELECT j.JOB_TITLE, d.DEPARTMENT_NAME, e.LAST_NAME, jh.START_DATE
+FROM JOBS j, DEPARTMENTS d, EMPLOYEES e, JOB_HISTORY jh
+WHERE e.EMPLOYEE_ID = jh.EMPLOYEE_ID AND
+      jh.DEPARTMENT_ID = d.DEPARTMENT_ID AND
+      jh.JOB_ID = j.JOB_ID AND
+      EXTRACT(YEAR FROM jh.START_DATE) BETWEEN 1998 AND 2000;
+            
+/*26*/
+SELECT JOB_TITLE, AVG(SALARY)
+FROM JOBS j, EMPLOYEES e
+WHERE j.JOB_ID = e.JOB_ID
+GROUP BY JOB_TITLE;
+
+/*27*/
+SELECT JOB_TITLE, (MAX_SALARY - SALARY) AS DIFERENCA
+FROM JOBS j , EMPLOYEES e 
+WHERE j.JOB_ID = e.JOB_ID;
+
+ /*28*/
+ SELECT j.JOB_ID, j.JOB_TITLE, j.MIN_SALARY, j.MAX_SALARY
+ FROM JOBS j, EMPLOYEES e
+ WHERE j.JOB_ID = e.JOB_ID AND 
+       e.SALARY > 15000;
+ 
+ /*29*/
+ SELECT e.FIRST_NAME, e.LAST_NAME
+ FROM EMPLOYEES e, EMPLOYEES m
+ WHERE e.MANAGER_ID = m.EMPLOYEE_ID AND
+       e.HIRE_DATE < m.HIRE_DATE;
+ 
+/*30*/
+SELECT concat(e.FIRST_NAME,e.LAST_NAME) as NOME, c.COUNTRY_NAME AS PAIS
+    FROM EMPLOYEES e, COUNTRIES c, DEPARTMENTS d, LOCATIONS l 
+        WHERE 
+            e.DEPARTMENT_ID = d.DEPARTMENT_ID AND 
+            d.LOCATION_ID = l.LOCATION_ID AND 
+            c.COUNTRY_ID = l.COUNTRY_ID; 
+            
+/*31*/
+Select Mes 
+    From (
+    Select Extract(Month From e.HIRE_DATE) As Mes, Count(e.EMPLOYEE_ID) as Funcionarios
+        From EMPLOYEES e, DEPARTMENTS d, LOCATIONS l
+        Where e.DEPARTMENT_ID = d.DEPARTMENT_ID and d.LOCATION_ID = l.LOCATION_ID and l.CITY = 'Seattle' 
+        Group By Extract(Month From e.HIRE_DATE)
+    )
+    Where Funcionarios > 3;
+
+/*32*/
+SELECT pais, cidade, count(dep) as num_dep FROM(
+    SELECT c.COUNTRY_NAME as pais , l.CITY as cidade, d.DEPARTMENT_ID as dep, count(e.DEPARTMENT_ID) as num_func
+     FROM COUNTRIES c, LOCATIONS l, DEPARTMENTS d, EMPLOYEES e 
+        WHERE 
+             d.LOCATION_ID = l.LOCATION_ID AND 
+             l.COUNTRY_ID = c.COUNTRY_ID AND 
+             e.DEPARTMENT_ID = d.DEPARTMENT_ID 
+            GROUP BY (c.COUNTRY_NAME, l.CITY, d.DEPARTMENT_ID))
+        WHERE num_func > 5 
+        GROUP BY (pais,cidade);
+
+/*33*/
+SELECT first_name 
+FROM employees 
+WHERE employee_id IN
+    (SELECT manager_id FROM employees
+        GROUP BY manager_id
+        HAVING COUNT(employee_id)>5);
+        
+        
+/*34*/
+SELECT CITY
+FROM EMPLOYEES e, DEPARTMENTS d, LOCATIONS l
+WHERE e.DEPARTMENT_ID = d.DEPARTMENT_ID AND
+      l.LOCATION_ID = d.LOCATION_ID AND
+      EMPLOYEE_ID = 105;
+
